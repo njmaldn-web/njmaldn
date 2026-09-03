@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام الإدارة والمتابعة المدرسية الشامل</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page" id="body-tag">
+
+  <!-- 1. Login View -->
+  <div id="login-view" class="login-card">
+    <h1>المتابعة المدرسية</h1>
+    <p>مرحباً بك، يرجى تسجيل الدخول للبدء</p>
+    
+    <div class="form-group">
+      <label>اسم المستخدم</label>
+      <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="password" placeholder="أدخل كلمة المرور">
+    </div>
+    <button onclick="login()">دخول النظام</button>
+  </div>
+
+  <!-- Dashboard Container -->
+  <div id="main-container" class="container hidden">
+    <!-- Header -->
+    <div id="header" class="header">
+      <div>
+        <h2 id="welcome-msg">مرحباً</h2>
+        <span id="user-role-badge" style="color: var(--accent); font-weight: bold; font-size: 14px;"></span>
+      </div>
+      <button onclick="logout()" class="btn-danger" style="width: auto;">تسجيل الخروج</button>
+    </div>
+
+    <!-- 2. Admin Dashboard -->
+    <div id="admin-view" class="hidden">
+      <h2>لوحة تحكم المدير</h2>
+      
+      <div class="tab-nav">
+        <button id="btn-tab-students" class="active-tab" onclick="switchAdminTab('students')">إدارة الطلاب</button>
+        <button id="btn-tab-teachers" onclick="switchAdminTab('teachers')">إدارة المعلمين</button>
+        <button id="btn-tab-parents" onclick="switchAdminTab('parents')">إدارة أولياء الأمور</button>
+      </div>
+
+      <!-- واجهة الطلاب -->
+      <div id="admin-tab-students">
+        <div class="card admin-card">
+          <h3>إضافة طالب جديد</h3>
+          <div class="form-group"><label>اسم الطالب الرباعي:</label><input type="text" id="add-std-name"></div>
+          <div class="form-group"><label>الصف الدراسي:</label><input type="text" id="add-std-class" placeholder="مثال: الصف الخامس"></div>
+          <div class="form-group"><label>اسم المستخدم (للطالب):</label><input type="text" id="add-std-user"></div>
+          <div class="form-group"><label>كلمة المرور:</label><input type="password" id="add-std-pass"></div>
+          <button onclick="createStudent()" class="btn-warning">إنشاء حساب طالب</button>
+        </div>
+
+        <div class="card admin-card">
+          <h3>قائمة الطلاب المسجلين وإدارتها</h3>
+          <table>
+            <thead><tr><th>المعرف (ID)</th><th>اسم الطالب</th><th>الصف</th><th>الإجراءات</th></tr></thead>
+            <tbody id="admin-students-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- واجهة المعلمين -->
+      <div id="admin-tab-teachers" class="hidden">
+        <div class="card admin-card">
+          <h3>إضافة معلم جديد</h3>
+          <div class="form-group"><label>اسم المعلم:</label><input type="text" id="add-tch-name"></div>
+          <div class="form-group"><label>اسم المستخدم (للمعلم):</label><input type="text" id="add-tch-user"></div>
+          <div class="form-group"><label>كلمة المرور:</label><input type="password" id="add-tch-pass"></div>
+          <button onclick="createTeacher()" class="btn-warning">إنشاء حساب معلم</button>
+        </div>
+
+        <div class="card admin-card">
+          <h3>قائمة المعلمين المسجلين وإدارتها</h3>
+          <table>
+            <thead><tr><th>اسم المعلم</th><th>اسم المستخدم</th><th>الإجراءات</th></tr></thead>
+            <tbody id="admin-teachers-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- واجهة أولياء الأمور -->
+      <div id="admin-tab-parents" class="hidden">
+        <div class="card admin-card">
+          <h3>إضافة ولي أمر جديد</h3>
+          <div class="form-group"><label>اسم ولي الأمر:</label><input type="text" id="add-prt-name"></div>
+          <div class="form-group"><label>ربط بالطالب:</label><select id="add-prt-student-select"></select></div>
+          <div class="form-group"><label>اسم المستخدم (لولي الأمر):</label><input type="text" id="add-prt-user"></div>
+          <div class="form-group"><label>كلمة المرور:</label><input type="password" id="add-prt-pass"></div>
+          <button onclick="createParent()" class="btn-warning">إنشاء حساب ولي أمر</button>
+        </div>
+
+        <div class="card admin-card">
+          <h3>قائمة أولياء الأمور المسجلين وإدارتها</h3>
+          <table>
+            <thead><tr><th>اسم ولي الأمر</th><th>اسم المستخدم</th><th>الطالب المرتبط</th><th>الإجراءات</th></tr></thead>
+            <tbody id="admin-parents-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Teacher Dashboard -->
+    <div id="teacher-view" class="hidden">
+      <h2>لوحة تحكم المعلم</h2>
+
+      <div class="tab-nav">
+        <button id="btn-tch-attendance" class="active-tab" onclick="switchTeacherTab('attendance')">تسجيل الحضور والغياب</button>
+        <button id="btn-tch-homework" onclick="switchTeacherTab('homework')">الواجبات والحلول الخاصة بي</button>
+        <button id="btn-tch-notes" onclick="switchTeacherTab('notes')">إضافة ملاحظات</button>
+      </div>
+      
+      <!-- تسجيل الحضور -->
+      <div id="tch-tab-attendance">
+        <div class="card teacher-card">
+          <h3>تسجيل الحضور والغياب للطالب</h3>
+          <div class="form-group"><label>اختر الطالب:</label><select id="attendance-student"></select></div>
+          <div class="form-group"><label>التاريخ:</label><input type="date" id="attendance-date"></div>
+          <div class="form-group">
+            <label>الحالة:</label>
+            <select id="attendance-status">
+              <option value="حاضر">حاضر</option>
+              <option value="غائب">غائب</option>
+            </select>
+          </div>
+          <button onclick="saveAttendance()" class="btn-success">حفظ الحضور</button>
+        </div>
+      </div>
+
+      <!-- الواجبات والحلول الخاصة بالمعلم -->
+      <div id="tch-tab-homework" class="hidden">
+        <div class="card teacher-card">
+          <h3>إضافة واجب منزلي جديد</h3>
+          <div class="form-group"><label>المادة:</label><input type="text" id="hw-subject" placeholder="مثال: الرياضيات"></div>
+          <div class="form-group"><label>وصف الواجب:</label><textarea id="hw-desc" rows="2" placeholder="تفاصيل الواجب المطلوب..."></textarea></div>
+          <div class="form-group"><label>تاريخ التسليم:</label><input type="date" id="hw-duedate"></div>
+          <button onclick="saveHomework()">إرسال الواجب</button>
+        </div>
+
+        <div class="card teacher-card">
+          <h3>الواجبات التي قمت بإضافتها (إدارة/تعديل/حذف)</h3>
+          <div id="teacher-my-homeworks"></div>
+        </div>
+
+        <div class="card teacher-card">
+          <h3>إجابات الطلاب على واجباتك</h3>
+          <div id="teacher-homework-submissions"></div>
+        </div>
+      </div>
+
+      <!-- الملاحظات -->
+      <div id="tch-tab-notes" class="hidden">
+        <div class="card teacher-card">
+          <h3>إضافة ملاحظة أكاديمية / سلوكية</h3>
+          <div class="form-group"><label>اختر الطالب:</label><select id="note-student"></select></div>
+          <div class="form-group"><label>الملاحظة:</label><textarea id="note-text" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div>
+          <button onclick="saveNote()">إرسال الملاحظة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Student/Parent Dashboard -->
+    <div id="user-view" class="hidden">
+      <div id="student-info-header" style="margin-bottom: 20px;"></div>
+
+      <div class="tab-nav">
+        <button id="btn-usr-attendance" class="active-tab" onclick="switchUserTab('attendance')">مراقبة الحضور والغياب</button>
+        <button id="btn-usr-homework" onclick="switchUserTab('homework')">الواجبات وتسليمها</button>
+        <button id="btn-usr-notes" onclick="switchUserTab('notes')">قائمة الملاحظات</button>
+      </div>
+
+      <!-- سجل الحضور والغياب -->
+      <div id="usr-tab-attendance">
+        <div class="card">
+          <h3>سجل الحضور والغياب</h3>
+          <table>
+            <thead><tr><th>التاريخ</th><th>الحالة</th></tr></thead>
+            <tbody id="attendance-list"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- الواجبات وتسليمها -->
+      <div id="usr-tab-homework" class="hidden">
+        <div class="card">
+          <h3>الواجبات المنزلية المطلوبة وتسليمها</h3>
+          <div id="student-homework-container"></div>
+        </div>
+      </div>
+
+      <!-- قائمة الملاحظات -->
+      <div id="usr-tab-notes" class="hidden">
+        <div class="card">
+          <h3>ملاحظات المعلمين الموجهة للطالب</h3>
+          <div id="notes-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
