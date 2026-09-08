@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام مراقبة ولي الأمر للطلاب - النتائج والمتابعة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page" id="body-tag">
+
+  <!-- 1. Login View -->
+  <div id="login-view" class="login-card">
+    <div class="school-logo">🎓</div>
+    <h1>نظام مراقبة ولي الأمر للطلاب</h1>
+    <h2>البوابة الإلكترونية لمتابعة النتائج والأداء الأكاديمي</h2>
+    <p>أهلاً بك، يرجى تسجيل الدخول للوصول للبوابة</p>
+    
+    <div class="form-group">
+      <label>اسم المستخدم</label>
+      <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="password" placeholder="أدخل كلمة المرور">
+    </div>
+    <button onclick="login()">تسجيل الدخول</button>
+  </div>
+
+  <!-- Dashboard Container -->
+  <div id="main-container" class="container hidden">
+    <div id="header" class="header">
+      <div class="brand-header">
+        <div class="small-logo">🎓</div>
+        <div>
+          <h2 id="welcome-msg">مرحباً بك</h2>
+          <span id="user-role-badge" style="color: var(--gold); font-weight: bold; font-size: 13px;"></span>
+        </div>
+      </div>
+      <button onclick="logout()" class="btn-danger" style="width: auto;">تسجيل الخروج</button>
+    </div>
+
+    <!-- 2. Admin Dashboard -->
+    <div id="admin-view" class="hidden">
+      <h2>لوحة إدارة نظام المتابعة والمراقبة</h2>
+      <br>
+      <div class="tab-nav">
+        <button id="btn-tab-students" class="active-tab" onclick="switchAdminTab('students')">إدارة الطلاب</button>
+        <button id="btn-tab-teachers" onclick="switchAdminTab('teachers')">إدارة المعلمين</button>
+        <button id="btn-tab-parents" onclick="switchAdminTab('parents')">إدارة أولياء الأمور</button>
+      </div>
+
+      <div id="admin-tab-students">
+        <div class="card admin-card">
+          <h3>تسجيل طالب جديد</h3>
+          <div class="form-group"><label>اسم الطالب الرباعي:</label><input type="text" id="add-std-name"></div>
+          <div class="form-group"><label>الصف الدراسي:</label><input type="text" id="add-std-class" placeholder="مثال: الصف الثالث ثانوي"></div>
+          <div class="form-group"><label>اسم المستخدم (للطالب):</label><input type="text" id="add-std-user"></div>
+          <div class="form-group"><label>كلمة المرور:</label><input type="password" id="add-std-pass"></div>
+          <button onclick="createStudent()" class="btn-warning">إنشاء حساب الطالب</button>
+        </div>
+
+        <div class="card admin-card">
+          <h3>سجل الطلاب المسجلين بالنظام</h3>
+          <table>
+            <thead><tr><th>المعرف (ID)</th><th>اسم الطالب</th><th>الصف</th><th>الإجراءات</th></tr></thead>
+            <tbody id="admin-students-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="admin-tab-teachers" class="hidden">
+        <div class="card admin-card">
+          <h3>إضافة معلم للنظام</h3>
+          <div class="form-group"><label>اسم المعلم:</label><input type="text" id="add-tch-name"></div>
+          <div class="form-group"><label>اسم المستخدم (للمعلم):</label><input type="text" id="add-tch-user"></div>
+          <div class="form-group"><label>كلمة المرور:</label><input type="password" id="add-tch-pass"></div>
+          <button onclick="createTeacher()" class="btn-warning">إنشاء حساب المعلم</button>
+        </div>
+
+        <div class="card admin-card">
+          <h3>قائمة الكادر التدريسي</h3>
+          <table>
+            <thead><tr><th>اسم المعلم</th><th>اسم المستخدم</th><th>الإجراءات</th></tr></thead>
+            <tbody id="admin-teachers-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="admin-tab-parents" class="hidden">
+        <div class="card admin-card">
+          <h3>ربط ولي أمر بطالب</h3>
+          <div class="form-group"><label>اسم ولي الأمر:</label><input type="text" id="add-prt-name"></div>
+          <div class="form-group"><label>ربط بالطالب:</label><select id="add-prt-student-select"></select></div>
+          <div class="form-group"><label>اسم المستخدم (لولي الأمر):</label><input type="text" id="add-prt-user"></div>
+          <div class="form-group"><label>كلمة المرور:</label><input type="password" id="add-prt-pass"></div>
+          <button onclick="createParent()" class="btn-warning">إنشاء حساب ولي أمر</button>
